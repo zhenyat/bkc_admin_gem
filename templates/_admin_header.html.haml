@@ -1,0 +1,8 @@
+%header
+  - if logged_in?
+    %div{:align => "right"}
+      = link_to "Log out", logout_path, method: "delete"
+  = favicon_link_tag  'bkc_ih.ico'
+  = link_to image_tag('admin/config.png', alt: '', title: 'На главную'), admin_root_path
+  %h1 Название сайта / приложения
+  %h2 Модуль Администратора

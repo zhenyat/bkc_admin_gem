@@ -1,0 +1,21 @@
+!!!
+%html
+  %head
+    %title Административный модуль
+    = stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true
+    = javascript_include_tag "application", "data-turbolinks-track" => true
+    = csrf_meta_tags
+    = render 'layouts/shim'
+  %body
+    = render 'layouts/admin_header'
+    %nav
+      %ul
+        - if @current_user.sysadmin?
+          %li= link_to 'Пользователи',  admin_users_path
+          %br
+        - else
+          %li= link_to 'Профиль',       edit_admin_user_path(@current_user)
+        %li= link_to 'Типы зданий',     admin_building_types_path
+        %li= link_to 'Здания',          admin_buildings_path
+      = yield
+      = render 'layouts/admin_footer'

@@ -1,0 +1,11 @@
+= debug(params)
+- unless @current_user.nil?
+  = "current_user: #{@current_user.full_name}; "
+  = "current_role: #{@current_user.role}"
+
+%p
+  Версии:
+  %br
+    = "#{RUBY_ENGINE}-#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL} | Rails: #{Rails.version}"
+    %br
+      = "Git ветка: #{GIT_BRANCH}; Commit: #{GIT_COMMIT} (#{l GIT_COMMIT_TIMESTAMP, format: '%d.%m.%Y %H:%M'})"

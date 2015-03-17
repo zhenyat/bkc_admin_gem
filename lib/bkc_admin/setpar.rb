@@ -2,7 +2,8 @@
 #   setpar.rb
 #     Initializses parameters for the gem
 #
-#   09.03.2015   ZT
+#   09.03.2015  ZT
+#   17.03.2015  0.2.0
 ################################################################################
 
 # Constants
@@ -12,6 +13,8 @@ GRAY  = 'grey'
 GREY  = 'gray'
 GREEN = 'green'
 RED   = 'red'
+
+ENUM_DDL_THRESHOLD = 4    # Since this value enum attributes are listed as DDLs (NOT NEEDED NOW)
 
 # Variables: paths
 $app_root     = `pwd`.chomp    # chomp without arguments removes "\n" or "\r\n" if any
@@ -23,7 +26,8 @@ $references_names    = []
 $password_attribute  = nil
 
 # Enumerated options
-$enum = []
+$enums     = []
+$enums_qty = []
 
 module BkcAdmin
   def self.root
@@ -38,6 +42,10 @@ module BkcAdmin
     File.join root, 'bin'
   end
 
+  def self.layouts
+    File.join root, 'layouts'
+  end
+
   def self.lib
     File.join root, 'lib'
   end
@@ -45,4 +53,5 @@ module BkcAdmin
   def self.templates
     File.join root, 'templates'
   end
+
 end

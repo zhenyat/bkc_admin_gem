@@ -7,6 +7,7 @@
 # 28.02.2015  v 1.0.1
 # 01.03.2015  v 1.1.0  sort_object helper added
 # 03.03.2015  v 1.2.0  Compound names handling
+# 17.03.2015  v 1.3.0  enum values
 ################################################################################
 
 require 'fileutils'
@@ -65,6 +66,30 @@ def create_views_path
   FileUtils::mkdir_p($absolute_views_path) unless File.exist?($absolute_views_path)
 end
 
+  # Calculates number of enumerated values for attributes if any
+  def enum_values
+    return if $enums.empty?
+
+    filename = File.join "#{$app_root}/app/models", "#{$name}.rb"
+    File.open(filename, "r") {|file| @lines = file.readlines; }
+
+    $enums.each_with_index do |enum, index|
+      @lines.each do |line|
+#          if line.include?('enum') && line.include? "#{enum}:"
+        if line.match('enum' && "#{enum}:")
+          $enums_qty[index] = line.count(',') + 1  # Number of commas + 1
+        end
+      end
+    end
+
+    # If no enum statements found in the Model file (NOT NEEEDE now)
+    if $enums_qty.empty?
+      (0...$enums.count).each do |i|
+        $enums_qty[i] = ENUM_DDL_THRESHOLD    # All enum attributes to be listed as DDLs
+      end
+    end
+  end
+
 # Selects type of input field for a given Model attribute in a form_for helper
 def field_type attr_name, attr_type
   case attr_type
@@ -78,12 +103,16 @@ def field_type attr_name, attr_type
       return "number_field :#{attr_name}, step: 0.01"
 
     when 'integer'
-      if attr_name == 'active'
-        return "radio_button :status, :active"
-      elsif attr_name == 'archived'
-        return "radio_button :status, :archived"
+      if $enums.include? attr_name
+        return "select :#{attr_name}, options_for_select(@#{attr_name}s.collect {|s| [s[0].humanize, s[0]]}, selected: @#{$name}.#{attr_name}), {}"
       else
-        return "number_field :#{attr_name}"
+        if attr_name == 'active'
+          return "radio_button :status, :active"
+        elsif attr_name == 'archived'
+          return "radio_button :status, :archived"
+        else
+          return "number_field :#{attr_name}"
+        end
       end
 
     when 'references'
@@ -105,6 +134,7 @@ def field_type attr_name, attr_type
       return "BAD"
   end
 end
+
 # Gets Model attributes aka arrays of names and types from the migration file
 def get_attributes
   $attr_names = []
@@ -153,59 +183,3 @@ def get_attributes
     exit
   end
 end
-
-# Gets Model names (capitalized and plural)
-#def get_names
-#  count = ARGV[1].scan(/\p{Upper}/).count  # Number of uppercase characters
-#
-#  if count > 1                      # Compound name
-#    $model  = ARGV[1]
-#    $models = $model.pluralize
-#    $name   = ARGV[1][0].downcase
-#    string  = ARGV[1][1..-1]
-#    string.chars do |c|
-#      if c.match(/\p{Upper}/)
-#        $name << '_' << c.downcase
-#      else
-#        $name << c
-#      end
-#    end
-#    $names = $name.pluralize
-##    puts $model; puts $models; puts $name; puts $names
-##    exit
-#  else                              # Simple name
-#    $model  = ARGV[1].capitalize    # e.g.  City
-#    $models = $model.pluralize      # e.g.  Cities
-#    $name   = $model.downcase       # e.g.  city
-#    $names  = $name.pluralize       # e.g.  cities
-##    puts $model; puts $models; puts $name; puts $names
-##    exit
-#  end
-#
-#  # Special attribute cases (identified in 'get_attributes')
-#  $references_names    = []
-#  $password_attribute  = nil
-#end
-
-# Verifies the Command line and parses arguments
-#def verify_command_line
-#  if ARGV.count == 0 || (ARGV.count == 1 && (ARGV[0] == '-h' || ARGV[0] == '--help'))
-#    puts "Command format: bin/admin <action> <Model_name>"
-#    puts "                where action is { generate | g | destroy | d}"
-#    exit
-#  end
-#
-#  if ARGV.count == 1 && (ARGV[0] == 'g' || ARGV[0] == 'generate' || ARGV[0] == 'd' || ARGV[0] == 'destroy')
-#    puts 'Provide Model_name'
-#    exit
-#  end
-#
-#  if    ARGV[0] == 'g' || ARGV[0] == 'generate'
-#    $mode = 'generate'
-#  elsif ARGV[0] == 'd' || ARGV[0] == 'destroy'
-#    $mode = 'destroy'
-#  else
-#    puts 'Incorrect command format'
-#    exit
-#  end
-#end

@@ -64,20 +64,6 @@ if File.exist?(admin_path) && Dir.glob("#{admin_path}/*").empty?
     puts colored(RED,  "\tremove     ") + "#{helper_relative_path}"
   end
 
-  # Delete Admin assets
-  pathes = ["app/assets/images/admin",
-            "app/assets/images/buttons",
-            "app/assets/stylesheets/admin",
-            "app/assets/javascripts/admin"
-           ]
-
-  pathes.each do |path|
-    if File.exist? "#{$app_root}/#{path}"
-      FileUtils.rm_rf "#{$app_root}/#{path}"
-      puts colored(RED,  "\tremove     ") + "#{path}"
-    end
-  end
-
 #  relative_images_path = "app/assets/images/admin"
 #  FileUtils.rm_rf "#{$app_root}/#{relative_images_path}"
 #  puts colored(RED,  "\tremove     ") + "#{relative_images_path}"

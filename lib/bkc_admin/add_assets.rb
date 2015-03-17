@@ -6,8 +6,6 @@
 #   14.03.2015  ZT
 ################################################################################
 
-
-# Delete Admin assets
 origin_paths = ["#{BkcAdmin.assets}/images/admin",
                 "#{BkcAdmin.assets}/images/buttons",
                 "#{BkcAdmin.assets}/stylesheets/admin",

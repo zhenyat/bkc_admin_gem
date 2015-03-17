@@ -7,6 +7,7 @@
 #   23.02.2015  v 1.0.0
 #   04.03.2015  v 1.1.0
 #   05.03.2015  v 1.2.0   activate admin module and layout
+#   17.03.2015  v 1.3.0
 ################################################################################
 # admin directory
 relative_path = 'app/controllers/admin'
@@ -57,7 +58,19 @@ end
 line << ") : {}\n\tend"
 file.puts line
 
+# Model scope
 file.puts "\n\tdef #{$name}_scope\n\t\t#{$model}.all\n\tend\n"
+
+# Enumerated scopes    - NOT NEEDED
+#unless $enums.empty?
+#  $enums.each do |enum|
+#    $attr_names.each do |attr_name|
+#      if enum.include? attr_name
+#        file.puts "\n\tdef #{attr_name}_scope\n\t\t#{$model}.#{attr_name}s\n\tend\n"
+#      end
+#    end
+#  end
+#end
 
 # FK scopes
 unless $references_names.empty?
@@ -78,15 +91,29 @@ unless $references_names.empty?
 end
 
 if $references_names.empty?
-  file.puts "\n\tdef build_#{$name}\n\t\t@#{$name}          ||= #{$name}_scope.build\n\t\t@#{$name}.attributes = #{$name}_params\n\tend"
+  line  = "\n\tdef build_#{$name}\n\t\t@#{$name}          ||= #{$name}_scope.build\n\t\t@#{$name}.attributes = #{$name}_params"
 else
   line = "\n\tdef build_#{$name}"
   $attr_names.each do |attr_name|
     line << "\n\t\t@#{attr_name}s         ||= #{attr_name}_scope.to_a" if $references_names.include? attr_name
   end
-  line << "\n\t\t@#{$name}          ||= #{$name}_scope.build\n\t\t@#{$name}.attributes = #{$name}_params\n\tend"
-  file.puts line
+  line << "\n\t\t@#{$name}          ||= #{$name}_scope.build\n\t\t@#{$name}.attributes = #{$name}_params"
 end
+
+# Add enumerated values
+unless $enums.empty?
+  $enums.each do |enum|
+    $attr_names.each do |attr_name|
+      if enum.include? attr_name
+        line << "\n\t\t@#{enum}s           = #{enum}_scope.to_a"
+        file.puts "\n\tdef #{attr_name}_scope\n\t\t#{$model}.#{attr_name}s\n\tend\n"
+      end
+    end
+  end
+end
+line << "\n\tend"
+file.puts line
+
 
 line = "\n\tdef load_#{$name}\n\t\t@#{$name} ||= #{$name}_scope.find(params[:id])"
 unless $references_names.empty?

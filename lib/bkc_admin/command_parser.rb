@@ -6,6 +6,7 @@
 #
 #   10.03.2015  ZT
 #   17.03.2015  v 0.2.0
+#   18.03.2015  v 0.3.0
 ################################################################################
 require 'optparse'
 require 'optparse/time'
@@ -24,14 +25,15 @@ module BkcAdmin
       # The options specified on the command line will be collected in *options*.
       # We set default values here.
       options = OpenStruct.new
-      options.enum = []
+      options.enum   = []       # List of enumerated attributes
+      options.editor = nil      # HTML Editor to be applied
 
       opt_parser = OptionParser.new do |opts|
         opts.banner  = "\nUsage:    bkc_admin {g | generate} model <model_name> [options]"
         opts.banner << "\n          bkc_admin {d | destroy} <model_name>"
         opts.banner << "\n          bkc_admin {g | generate | d | destroy} assets"
         opts.banner << "\n          bkc_admin {g | generate | d | destroy} layouts"
-        opts.banner << "\nExamples: bkc_admin g model User -e role"
+        opts.banner << "\nExamples: bkc_admin g model User -e role -t ckeditor"
         opts.banner << "\n          bkc_admin d model Product"
         opts.banner << "\n          bkc_admin g assets"
         opts.banner << "\n          bkc_admin destroy layouts"
@@ -42,6 +44,10 @@ module BkcAdmin
         # Mandatory argument(s)
         opts.on("-e", "--enum ENUMERATED ATTRIBUTE", "To present the Model enum attribute as a proper input field in a view form") do |enum|
           options.enum << enum
+        end
+
+        opts.on("-t", "--text TEXTEDITOR", "To select an HTML text editor for working with textarea input fields in a view form") do |text|
+          options.editor = text
         end
 
         opts.separator ""

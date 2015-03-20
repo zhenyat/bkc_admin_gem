@@ -63,7 +63,8 @@ module BkcAdmin
       end
 
       # Enumerated options
-      $enums = options[:enum] if options[:enum].size > 0
+      $enums  = options[:enum] if options[:enum].size > 0
+      $editor = options[:editor] unless options[:editor].nil?
     end
   end
 end

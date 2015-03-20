@@ -128,7 +128,11 @@ def field_type attr_name, attr_type
       end
 
     when 'text'
-      return "text_area :#{attr_name}"
+      if $editor.nil?
+        return "text_area :#{attr_name}"
+      else
+        return "cktext_area :#{attr_name}"
+      end
     else
       puts  colored(RED, "ERROR in field_type: UNDEFINED Attribute Type = '#{attr_type}' for attribute: '#{attr_name}'")
       return "BAD"

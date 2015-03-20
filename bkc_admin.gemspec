@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["etelyukov@bkc.ru"]
   spec.summary       = %q{BKC Admin Generation}
   spec.description   = %q{Tool to generate Admin controllers, helpers and views}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/zhenyat/bkc_admin_gem"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")

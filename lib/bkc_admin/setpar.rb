@@ -29,6 +29,8 @@ $password_attribute  = nil
 $enums     = []
 $enums_qty = []
 
+$editor = nil
+
 module BkcAdmin
   def self.root
     File.dirname(__dir__).chomp("/lib")

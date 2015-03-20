@@ -25,8 +25,8 @@ file = File.open(absolute_path, 'w')
 
 # Generate controller code
 file.puts "class Admin::#{$models}Controller < ApplicationController"
-#file.puts "\tinclude AdminAuthentication\n\tlayout 'admin'\n\n"
-#file.puts "\tbefore_filter :check_login"
+file.puts "\tinclude AdminAuthentication\n\tlayout 'admin'\n\n"
+file.puts "\tbefore_filter :check_login"
 file.puts "\tbefore_action :set_#{$name}, only: [:show, :edit, :update,:destroy]"
 
 file.puts "\n\tdef create\n\t\tbuild_#{$name}\n\t\tsave_#{$name} or render 'new'\n\tend"

@@ -27,6 +27,7 @@ if $mode == 'generate'                          # Generate Admin directories and
 
       require "bkc_admin/controller"            # Admin Controller
       require "bkc_admin/authentication"        # Concerns Controller & Updates application_controller
+      require "bkc_admin/policy"                # Pundit policy file
 
       require "bkc_admin/helper"                # Admin Helpers
 

@@ -7,6 +7,7 @@
 #   10.03.2015  ZT
 #   17.03.2015  v 0.2.0
 #   18.03.2015  v 0.3.0
+#   21.03.2015  *access* authorization added
 ################################################################################
 require 'optparse'
 require 'optparse/time'
@@ -25,6 +26,7 @@ module BkcAdmin
       # The options specified on the command line will be collected in *options*.
       # We set default values here.
       options = OpenStruct.new
+      options.access = nil      # Access Authorization tool (gem) to be applied
       options.enum   = []       # List of enumerated attributes
       options.editor = nil      # HTML Editor to be applied
 
@@ -33,7 +35,7 @@ module BkcAdmin
         opts.banner << "\n          bkc_admin {d | destroy} <model_name>"
         opts.banner << "\n          bkc_admin {g | generate | d | destroy} assets"
         opts.banner << "\n          bkc_admin {g | generate | d | destroy} layouts"
-        opts.banner << "\nExamples: bkc_admin g model User -e role -t ckeditor"
+        opts.banner << "\nExamples: bkc_admin g model User -a pundit -e role -t ckeditor"
         opts.banner << "\n          bkc_admin d model Product"
         opts.banner << "\n          bkc_admin g assets"
         opts.banner << "\n          bkc_admin destroy layouts"
@@ -42,6 +44,10 @@ module BkcAdmin
         opts.separator "Specific options:"
 
         # Mandatory argument(s)
+        opts.on("-a", "--access AUTHORIZATION TOOL", "To select and apply access authorization tool") do |access|
+          options.access = access
+        end
+
         opts.on("-e", "--enum ENUMERATED ATTRIBUTE", "To present the Model enum attribute as a proper input field in a view form") do |enum|
           options.enum << enum
         end

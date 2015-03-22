@@ -4,6 +4,7 @@
 #
 #   09.03.2015  ZT
 #   17.03.2015  0.2.0
+#   21.03.2015  *access* authorization added
 ################################################################################
 
 # Constants
@@ -25,11 +26,12 @@ $model_path   = "#{$app_root}/app/models"
 $references_names    = []
 $password_attribute  = nil
 
-# Enumerated options
+# Reset mandatory options
 $enums     = []
 $enums_qty = []
 
 $editor = nil
+$access = nil
 
 module BkcAdmin
   def self.root

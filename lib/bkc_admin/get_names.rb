@@ -62,9 +62,10 @@ module BkcAdmin
         $names  = $name.pluralize       # e.g.  cities
       end
 
-      # Enumerated options
-      $enums  = options[:enum] if options[:enum].size > 0
+      # Mandatory options
+      $enums  = options[:enum]   if options[:enum].size > 0
       $editor = options[:editor] unless options[:editor].nil?
+      $access = options[:access] unless options[:access].nil?
     end
   end
 end

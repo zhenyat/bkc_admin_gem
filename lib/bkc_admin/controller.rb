@@ -8,6 +8,7 @@
 #   04.03.2015  v 1.1.0
 #   05.03.2015  v 1.2.0   activate admin module and layout
 #   17.03.2015  v 1.3.0
+#   21.03.2015  *access* authorization added
 ################################################################################
 # admin directory
 relative_path = 'app/controllers/admin'
@@ -29,13 +30,26 @@ file.puts "\tinclude AdminAuthentication\n\tlayout 'admin'\n\n"
 file.puts "\tbefore_filter :check_login"
 file.puts "\tbefore_action :set_#{$name}, only: [:show, :edit, :update,:destroy]"
 
+if $access == 'pundit'
+  file.puts "\tafter_action  :verify_authorized,    except: :index"
+  file.puts "\tafter_action  :verify_policy_scoped, only:   :index"
+end
+
 file.puts "\n\tdef create\n\t\tbuild_#{$name}\n\t\tsave_#{$name} or render 'new'\n\tend"
 
 file.puts "\n\tdef destroy\n\t\tload_#{$name}\n\t\t@#{$name}.destroy\n\t\tredirect_to admin_#{$names}_url, notice: '#{$model} was successfully destroyed'\n\tend"
 
 file.puts "\n\tdef edit\n\t\tload_#{$name}\n\t\tbuild_#{$name}\n\tend"
 
-file.puts "\n\tdef index\n\t\tload_#{$names}\n\tend"
+if $access == 'pundit'
+  line = "\n\tdef index"
+  line << "\n\t\t@#{$names} = policy_scope($model)"
+  line << "\n\t\tredirect_to :back, alert: 'Access forbidden' if @#{$names}.empty?"
+  line << "\n\tend"
+  file.puts line
+else
+  file.puts "\n\tdef index\n\t\tload_#{$names}\n\tend"
+end
 
 file.puts "\n\tdef new\n\t\tbuild_#{$name}\n\tend"
 
@@ -111,9 +125,9 @@ unless $enums.empty?
     end
   end
 end
+line << "\n\t\tauthorize @#{$name}"  if $access == 'pundit'
 line << "\n\tend"
 file.puts line
-
 
 line = "\n\tdef load_#{$name}\n\t\t@#{$name} ||= #{$name}_scope.find(params[:id])"
 unless $references_names.empty?
@@ -121,17 +135,20 @@ unless $references_names.empty?
     line << "\n\t\t@#{attr_name}_title = @#{$name}.#{attr_name}.title" if $references_names.include? attr_name
   end
 end
+line << "\n\t\tauthorize @#{$name}"  if $access == 'pundit'
 line << "\n\tend"
 file.puts line
 
-line = "\n\tdef load_#{$names}"
-unless $references_names.empty?
-  $attr_names.each do |attr_name|
-    line << "\n\t\t@#{attr_name}s ||= #{attr_name}_scope.to_a" if $references_names.include? attr_name
+unless $access == 'pundit'
+  line = "\n\tdef load_#{$names}"
+  unless $references_names.empty?
+    $attr_names.each do |attr_name|
+      line << "\n\t\t@#{attr_name}s ||= #{attr_name}_scope.to_a" if $references_names.include? attr_name
+    end
   end
+  line << "\n\t\t@#{$names} ||= #{$name}_scope.to_a\n\tend"
+  file.puts line
 end
-line << "\n\t\t@#{$names} ||= #{$name}_scope.to_a\n\tend"
-file.puts line
 
 file.puts "\n\tdef save_#{$name}\n\t\tif @#{$name}.save\n\t\t\tredirect_to [:admin, @#{$name}], notice: '#{$model} was successfully created'\n\t\tend\n\tend"
 

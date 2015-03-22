@@ -15,7 +15,7 @@ if $access == 'pundit'
   Dir.mkdir(policies_path) unless File.exist?(policies_path)
 
   # Policy file
-  relative_path = "app/policies/#{$names}_policy.rb"
+  relative_path = "app/policies/#{$name}_policy.rb"
   absolute_path = "#{$app_root}/#{relative_path}"
 
   action_report relative_path

@@ -5,6 +5,7 @@
 #
 #   12.03.2015  ZT
 #   15.03.2015  Corrected
+#   21.03.2015  Corrected
 ################################################################################
 
 # Concerns directory
@@ -45,13 +46,11 @@ lines.each_with_index do |line, k|
   end
 end
 
-if found
+unless found
   # Add new *include* line
-  lines.each_with_index do |line, k|
+  lines.each do |line|
     file_out.puts line
-    if line.match("protect_from_forgery") && !line.match("#") # Line exists and not a comment
-      file_out.puts "  include AdminAuthentication"
-    end
+    file_out.puts "  include AdminAuthentication" if line.include?("protect_from_forgery")
   end
 
   file_out.close

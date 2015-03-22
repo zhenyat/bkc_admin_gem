@@ -30,5 +30,4 @@ if $access == 'pundit'
 
   file_in.close
   file_out.close
-  exit
 end

@@ -64,6 +64,15 @@ if File.exist?(admin_path) && Dir.glob("#{admin_path}/*").empty?
     puts colored(RED,  "\tremove     ") + "#{helper_relative_path}"
   end
 
+  # Delete policy file
+  policy_relative_path = "app/policies"
+  policy_absolute_path = "#{$app_root}/#{policy_relative_path}"
+  policy_file          = "#{policy_absolute_path}/#{$name}_policy.rb"
+  if File.exist? policy_file
+    File.delete policy_file
+    puts colored(RED,  "\tremove     ") + "#{policy_relative_path}/#{$name}_policy.rb"
+  end
+
 #  relative_images_path = "app/assets/images/admin"
 #  FileUtils.rm_rf "#{$app_root}/#{relative_images_path}"
 #  puts colored(RED,  "\tremove     ") + "#{relative_images_path}"

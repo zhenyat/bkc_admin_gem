@@ -43,7 +43,7 @@ file.puts "\n\tdef edit\n\t\tload_#{$name}\n\t\tbuild_#{$name}\n\tend"
 
 if $access == 'pundit'
   line = "\n\tdef index"
-  line << "\n\t\t@#{$names} = policy_scope($model)"
+  line << "\n\t\t@#{$names} = policy_scope(#{$model})"
   line << "\n\t\tredirect_to :back, alert: 'Access forbidden' if @#{$names}.empty?"
   line << "\n\tend"
   file.puts line

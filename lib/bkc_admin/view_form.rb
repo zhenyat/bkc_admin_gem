@@ -6,6 +6,7 @@
 #
 #   01.02.2014  ZT
 #   23.02.2015  v 1.0.0
+#   26.03.2015  v 1.1.0 Localization
 ################################################################################
 
 relative_path = "#{$relative_views_path}/_form.html.haml"
@@ -27,34 +28,34 @@ file.puts "          %li= msg"
 
 # Input fields
 $attr_names.each_with_index do |attr_name, k|
-#  file.puts "  .field"
-#  file.puts "    =f.label :#{attr_name}"
   if attr_name == 'status'
     file.puts "  %div"
-    file.puts "    %p Статус:"
+    file.puts "    %p= t(:status)"
     file.puts "    =f.#{field_type('active',   $attr_types[k])}"
-    file.puts "    = label :status, 'Активный'"
+    file.puts "    = label :status, t(:active)"
     file.puts "    =f.#{field_type('archived', $attr_types[k])}"
-    file.puts "    = label :status, 'Архив'"
+    file.puts "    = label :status, t(:archive)"
   elsif attr_name.match 'password'
     file.puts "  .field"
-    file.puts "    =f.label :password"
+    file.puts "    =f.label t(:password)"
     file.puts "    =f.#{field_type('password', $attr_types[k])}"
 
     file.puts "  .field"
-    file.puts "    =f.label :password_confirmation"
+    file.puts "    =f.label t(:password_confirmation)"
     file.puts "    =f.#{field_type('password_confirmation', $attr_types[k])}"
   elsif attr_name.match 'remember_digest'
     # skip this attribute
+  elsif attr_name == 'position'
+    file.puts "  %input{:type => 'hidden', :name => 'position',  :value => @#{$name}.position}"
   else
     file.puts "  .field"
-    file.puts "    =f.label :#{attr_name}"
+    file.puts "    =f.label t(:#{attr_name})"
     file.puts "    =f.#{field_type(attr_name, $attr_types[k])}"
   end
 end
 
 # Submit button
 file.puts "  .actions"
-file.puts "    = f.submit 'Save'"
+file.puts "    = f.submit t(:save)"
 
 file.close

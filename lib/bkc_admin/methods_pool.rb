@@ -8,6 +8,7 @@
 # 01.03.2015  v 1.1.0  sort_object helper added
 # 03.03.2015  v 1.2.0  Compound names handling
 # 17.03.2015  v 1.3.0  enum values
+# 26.03.2015  v 1.4.0  position
 ################################################################################
 
 require 'fileutils'
@@ -104,7 +105,7 @@ def field_type attr_name, attr_type
 
     when 'integer'
       if $enums.include? attr_name
-        return "select :#{attr_name}, options_for_select(@#{attr_name}s.collect {|s| [s[0].humanize, s[0]]}, selected: @#{$name}.#{attr_name}), {}"
+        return "select :#{attr_name}, options_for_select(@#{attr_name}s.collect {|s| [s[0].humanize, s[0]]}.sort, selected: @#{$name}.#{attr_name}), {}"
       else
         if attr_name == 'active'
           return "radio_button :status, :active"

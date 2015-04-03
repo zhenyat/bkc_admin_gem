@@ -10,10 +10,10 @@ module Admin::BkcHelper
 
   # Selects a status mark to be displayed
   def status_mark status
-    if status == 'active'
-      image_tag('admin/checkmark.png', size: '12x15', alt: 'Актив')
+    if status == 'active' || status == true
+      image_tag('admin/check_mark.png', size: '12x15', alt: 'Актив')
     else
-      image_tag('admin/archive.png',   size: '12x15', alt: 'Архив')
+      image_tag('admin/minus_mark.png', size: '12x15', alt: 'Архив')
     end
   end
 end

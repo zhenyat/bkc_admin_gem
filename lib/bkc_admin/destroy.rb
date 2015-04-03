@@ -6,6 +6,7 @@
 #   15.02.2015  ZT
 #   23.02.2015  v 1.0.0
 #   14.03.2015  v 1.1.0  Assets removing
+#   26.03.2015  v 1.2.0  Bug fixed
 ################################################################################
 
 # Delete controller
@@ -38,6 +39,16 @@ if File.exist?(absolute_path)
   puts colored(RED,  "\tremove     ") + "#{helper_file}"
 end
 
+# Delete policy file
+  policy_relative_path = "app/policies"
+  policy_absolute_path = "#{$app_root}/#{policy_relative_path}"
+  policy_file          = "#{policy_absolute_path}/#{$name}_policy.rb"
+
+  if File.exist? policy_file
+    File.delete policy_file
+    puts colored(RED,  "\tremove     ") + "#{policy_relative_path}/#{$name}_policy.rb"
+  end
+
 # Delete everything if no more models in Admin
 if File.exist?(admin_path) && Dir.glob("#{admin_path}/*").empty?
   Dir.rmdir admin_path
@@ -62,15 +73,6 @@ if File.exist?(admin_path) && Dir.glob("#{admin_path}/*").empty?
   if Dir.glob("#{helper_admin_path}/*").empty?
     Dir.rmdir helper_admin_path
     puts colored(RED,  "\tremove     ") + "#{helper_relative_path}"
-  end
-
-  # Delete policy file
-  policy_relative_path = "app/policies"
-  policy_absolute_path = "#{$app_root}/#{policy_relative_path}"
-  policy_file          = "#{policy_absolute_path}/#{$name}_policy.rb"
-  if File.exist? policy_file
-    File.delete policy_file
-    puts colored(RED,  "\tremove     ") + "#{policy_relative_path}/#{$name}_policy.rb"
   end
 
 #  relative_images_path = "app/assets/images/admin"

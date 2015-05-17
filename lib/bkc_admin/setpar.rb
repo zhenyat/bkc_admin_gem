@@ -4,7 +4,8 @@
 #
 #   09.03.2015  ZT
 #   17.03.2015  0.2.0
-#   21.03.2015  *access* authorization added
+#   21.03.2015  *access*  authorization added
+#   16.04.2015  *logbook* added
 ################################################################################
 
 # Constants
@@ -30,8 +31,9 @@ $password_attribute  = nil
 $enums     = []
 $enums_qty = []
 
-$editor = nil
-$access = nil
+$editor  = nil
+$access  = nil
+$logbook = false
 
 module BkcAdmin
   def self.root

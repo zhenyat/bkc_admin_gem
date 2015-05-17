@@ -4,6 +4,7 @@
 #
 #   10.03.2015   ZT
 #   17.03.2015  v 0.2.0
+#   16.04.2015  logbook added
 ################################################################################
 
 module BkcAdmin
@@ -63,9 +64,10 @@ module BkcAdmin
       end
 
       # Mandatory options
-      $enums  = options[:enum]   if options[:enum].size > 0
-      $editor = options[:editor] unless options[:editor].nil?
-      $access = options[:access] unless options[:access].nil?
+      $enums   = options[:enum]    if     options[:enum].size > 0
+      $editor  = options[:editor]  unless options[:editor].nil?
+      $access  = options[:access]  unless options[:access].nil?
+      $logbook = options[:logbook] unless options[:logbook].nil?
     end
   end
 end

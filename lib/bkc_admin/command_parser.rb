@@ -7,7 +7,8 @@
 #   10.03.2015  ZT
 #   17.03.2015  v 0.2.0
 #   18.03.2015  v 0.3.0
-#   21.03.2015  *access* authorization added
+#   21.03.2015  *access*  authorization added
+#   16.04.2015  *logbook* added
 ################################################################################
 require 'optparse'
 require 'optparse/time'
@@ -57,9 +58,17 @@ module BkcAdmin
         end
 
         opts.separator ""
-        opts.separator "Common options:"
+        opts.separator "Options without parameters:"
 
-        # No argument, shows at tail.  This will print an options summary.
+        # Logbook to be used
+        opts.on_tail("-l", "--logbook", "Logbook to be used") do
+          options.logbook = true
+        end
+
+#        opts.separator ""
+#        opts.separator "Common options:"
+
+        # No argument, shows at tail.  This will print an options summary
         opts.on_tail("-h", "--help", "Show this message") do
           puts opts
           exit

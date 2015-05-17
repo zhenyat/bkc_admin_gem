@@ -39,6 +39,8 @@ if $mode == 'generate'                          # Generate Admin directories and
       require "bkc_admin/view_new"              # View:     new
       require "bkc_admin/view_edit"             # View:     edit
       require "bkc_admin/view_form"             # Partial: _for
+
+      require "bkc_admin/add_assets_for_controller"  # Add JS and SCSS files for the controller
     when 'assets'
       require "bkc_admin/add_assets"            # Add assets for Admin
     when 'layouts'

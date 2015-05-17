@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 ################################################################################
 #   bin/bkc
-#     Generates Admin Controller for the given Model
+#     G:verify_authorizedenerates Admin Controller for the given Model
 #
 #   25.01.2015  ZT
 #   23.02.2015  v 1.0.0
@@ -9,6 +9,7 @@
 #   05.03.2015  v 1.2.0   activate admin module and layout
 #   17.03.2015  v 1.3.0
 #   21.03.2015  *access* authorization added
+#   17.05.2015  *alterations* bug fixed
 ################################################################################
 # admin directory
 relative_path = 'app/controllers/admin'
@@ -28,12 +29,14 @@ file = File.open(absolute_path, 'w')
 file.puts "class Admin::#{$models}Controller < ApplicationController"
 file.puts "\tinclude AdminAuthentication\n\tlayout 'admin'\n\n"
 file.puts "\tbefore_filter :check_login"
-file.puts "\tbefore_action :set_#{$name}, only: [:show, :edit, :update,:destroy]"
+file.puts "\tbefore_action :set_#{$name}, only:  [:edit, :destroy, :show, :update]"
 
 if $access == 'pundit'
   file.puts "\tafter_action  :verify_authorized,    except: :index"
   file.puts "\tafter_action  :verify_policy_scoped, only:   :index"
 end
+
+file.puts "\tafter_action  :logbook,              only:  [:create, :destroy, :update]" if $logbook
 
 file.puts "\n\tdef create\n\t\tbuild_#{$name}\n\t\tsave_#{$name} or render 'new'\n\tend"
 
@@ -150,12 +153,20 @@ unless $access == 'pundit'
   file.puts line
 end
 
-file.puts "\n\tdef save_#{$name}\n\t\tif @#{$name}.save\n\t\t\tredirect_to [:admin, @#{$name}], notice: '#{$model} was successfully created'\n\t\tend\n\tend"
+if $logbook
+  file.puts "\n\tdef save_#{$name}\n\t\tif @#{$name}.save\n\t\t\tparams['alterations'] = @#{$name}.previous_changes\n\t\t\tredirect_to [:admin, @#{$name}], notice: '#{$model} was successfully created'\n\t\tend\n\tend"
+else
+  file.puts "\n\tdef save_#{$name}\n\t\tif @#{$name}.save\n\t\t\tredirect_to [:admin, @#{$name}], notice: '#{$model} was successfully created'\n\t\tend\n\tend"
+end
 
 file.puts "\n\t# Use callbacks to share common setup or constraints between actions"
 file.puts "\tdef set_#{$name}\n\t\t@#{$name} = #{$model}.find(params[:id])\n\tend"
 
-file.puts "\n\tdef update_#{$name}\n\t\tif @#{$name}.update(#{$name}_params)\n\t\t\tredirect_to [:admin, @#{$name}], notice: '#{$model} was successfully updated'\n\t\tend\n\tend"
+if $logbook
+  file.puts "\n\tdef update_#{$name}\n\t\tif @#{$name}.update(#{$name}_params)\n\t\t\tparams['alterations'] = @#{$name}.previous_changes\n\t\t\tredirect_to [:admin, @#{$name}], notice: '#{$model} was successfully updated'\n\t\tend\n\tend"
+else
+  file.puts "\n\tdef update_#{$name}\n\t\tif @#{$name}.update(#{$name}_params)\n\t\t\tredirect_to [:admin, @#{$name}], notice: '#{$model} was successfully updated'\n\t\tend\n\tend"
+end
 
 file.puts "end"
 

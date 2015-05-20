@@ -10,6 +10,7 @@
 #   17.03.2015  v 1.3.0
 #   21.03.2015  *access* authorization added
 #   17.05.2015  *alterations* bug fixed
+#   19.05.2015  *access_forbidden* line updated
 ################################################################################
 # admin directory
 relative_path = 'app/controllers/admin'
@@ -29,14 +30,14 @@ file = File.open(absolute_path, 'w')
 file.puts "class Admin::#{$models}Controller < ApplicationController"
 file.puts "\tinclude AdminAuthentication\n\tlayout 'admin'\n\n"
 file.puts "\tbefore_filter :check_login"
-file.puts "\tbefore_action :set_#{$name}, only:  [:edit, :destroy, :show, :update]"
+file.puts "\tbefore_action :set_#{$name},              only:  [:edit, :destroy, :show, :update]"
 
 if $access == 'pundit'
-  file.puts "\tafter_action  :verify_authorized,    except: :index"
-  file.puts "\tafter_action  :verify_policy_scoped, only:   :index"
+  file.puts "\tafter_action  :verify_authorized,  except:  :index"
+  file.puts "\tafter_action  :verify_policy_scoped, only:  :index"
 end
 
-file.puts "\tafter_action  :logbook,              only:  [:create, :destroy, :update]" if $logbook
+file.puts "\tafter_action  :logbook,              only: [:create, :destroy, :update]" if $logbook
 
 file.puts "\n\tdef create\n\t\tbuild_#{$name}\n\t\tsave_#{$name} or render 'new'\n\tend"
 
@@ -47,7 +48,7 @@ file.puts "\n\tdef edit\n\t\tload_#{$name}\n\t\tbuild_#{$name}\n\tend"
 if $access == 'pundit'
   line = "\n\tdef index"
   line << "\n\t\t@#{$names} = policy_scope(#{$model})"
-  line << "\n\t\tredirect_to :back, alert: 'Access forbidden' if @#{$names}.empty?"
+  line << "\n\t\tredirect_to :back, alert: t(:access_forbidden) if (@#{$names}.empty? && current_user.role != 'sysadmin')"
   line << "\n\tend"
   file.puts line
 else

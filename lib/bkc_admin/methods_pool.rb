@@ -9,6 +9,7 @@
 # 03.03.2015  v 1.2.0  Compound names handling
 # 17.03.2015  v 1.3.0  enum values
 # 26.03.2015  v 1.4.0  position
+# 17.05.2015  v 1.5.0  datetime field_type
 ################################################################################
 
 require 'fileutils'
@@ -97,13 +98,16 @@ def field_type attr_name, attr_type
     when 'boolean'
       return "check_box :#{attr_name}"
 
-    when 'date'
-      return "date_select(:#{attr_name}, order: [:day, :month, :year], selected: Date.today, use_month_names: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября','декабря']) "
-
     when 'decimal'
       return "number_field :#{attr_name}, step: 0.01"
 
-    when 'integer'
+    when 'date'
+      return "date_select(:#{attr_name}, order: [:day, :month, :year], selected: Date.today, use_month_names: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября','декабря']) "
+
+    when 'datetime'
+      return "datetime_select(:#{attr_name}"
+
+  when 'integer'
       if $enums.include? attr_name
         return "select :#{attr_name}, options_for_select(@#{attr_name}s.collect {|s| [s[0].humanize, s[0]]}.sort, selected: @#{$name}.#{attr_name}), {}"
       else

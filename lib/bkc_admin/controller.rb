@@ -11,6 +11,7 @@
 #   21.03.2015  *access* authorization added
 #   17.05.2015  *alterations* bug fixed
 #   19.05.2015  *access_forbidden* line updated
+#   23.05.2013  *BKC* module added with -l option
 ################################################################################
 # admin directory
 relative_path = 'app/controllers/admin'
@@ -28,7 +29,9 @@ file = File.open(absolute_path, 'w')
 
 # Generate controller code
 file.puts "class Admin::#{$models}Controller < ApplicationController"
-file.puts "\tinclude AdminAuthentication\n\tlayout 'admin'\n\n"
+file.puts "\tinclude AdminAuthentication"
+file.puts "\tinclude BKC" if $logbook
+file.puts "\tlayout 'admin'\n\n"
 file.puts "\tbefore_filter :check_login"
 file.puts "\tbefore_action :set_#{$name},              only:  [:edit, :destroy, :show, :update]"
 
